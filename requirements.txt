@@ -1,0 +1,17 @@
+# --- Backend / server ---
+Flask>=3.0
+Flask-SQLAlchemy>=3.1
+SQLAlchemy>=2.0
+PyMySQL>=1.1
+cryptography>=42        # needed by PyMySQL for MySQL 8 default auth
+python-dotenv>=1.0
+numpy>=1.26
+Pillow>=10.0
+
+# --- Scanner (runs on the laptop that walks around) ---
+requests>=2.31
+ping3>=4.0
+
+# --- Optional ---
+# pywifi>=1.1           # alternative scanner backend (--backend pywifi); Windows also needs: comtypes
+pytest>=8.0

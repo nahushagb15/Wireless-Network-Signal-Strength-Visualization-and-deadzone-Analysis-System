@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deadzone Mapper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app">
+
+  <aside class="rail" aria-label="Sessions">
+    <header class="brand">
+      <h1>Deadzone Mapper</h1>
+      <p>Walk the building, mark where you stand, see where the Wi-Fi gives out.</p>
+    </header>
+
+    <form id="new-form" class="block" autocomplete="off">
+      <h2>Start a session</h2>
+      <label for="new-name">Session name</label>
+      <input id="new-name" type="text" maxlength="120" placeholder="Hostel floor 2, evening" required>
+      <label for="new-file">Floor plan image</label>
+      <input id="new-file" type="file" accept="image/*" required>
+      <button class="primary" type="submit">Create session</button>
+    </form>
+
+    <section id="phone-panel" class="block" hidden>
+      <h2>Open on your phone</h2>
+      <div class="phone">
+        <div id="qr" aria-label="QR code for the phone link"></div>
+        <p>Point your phone camera at the code. Your phone must be on the same Wi-Fi as this laptop.
+          Or type <code id="phone-url"></code></p>
+      </div>
+    </section>
+
+    <section class="block grow">
+      <h2>Past sessions</h2>
+      <ul id="sessions" class="sessions"></ul>
+      <p id="sessions-empty" class="muted" hidden>No sessions yet. Create one above.</p>
+    </section>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="title">
+        <h2 id="title">No session selected</h2>
+        <span id="status" class="badge" hidden></span>
+      </div>
+      <div class="controls">
+        <label class="inline">Network
+          <select id="ssid"><option value="">All networks</option></select>
+        </label>
+        <label class="inline">Show
+          <select id="metric">
+            <option value="rssi">Signal strength</option>
+            <option value="latency">Latency</option>
+            <option value="packet_loss">Packet loss</option>
+          </select>
+        </label>
+        <button id="mark-toggle" class="toggle" aria-pressed="true" type="button">Marking position</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div id="map" aria-label="Floor plan heatmap"></div>
+      <div id="stage-msg" class="stage-msg">
+        <p>Select a session on the left, or create a new one.</p>
+      </div>
+    </div>
+
+    <div class="below" id="below" hidden>
+      <section class="panel">
+        <h3>Coverage</h3>
+        <dl id="summary" class="stats"></dl>
+        <div class="actions">
+          <button id="btn-stop" type="button">Stop scanning</button>
+          <button id="btn-resume" type="button" hidden>Resume scanning</button>
+          <a id="btn-png" class="btn" href="#" download>Download heatmap image</a>
+          <a id="btn-csv" class="btn" href="#" download>Download data (CSV)</a>
+          <button id="btn-delete" class="danger" type="button">Delete session</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>Deadzones</h3>
+        <ol id="regions" class="regions"></ol>
+        <p id="regions-empty" class="muted" hidden></p>
+      </section>
+
+      <section class="panel">
+        <h3>Thresholds</h3>
+        <form id="thr-form" class="thr">
+          <label>Weak signal below (dBm)<input id="thr-rssi" type="number" step="1" value="-75"></label>
+          <label>Packet loss above (%)<input id="thr-loss" type="number" step="1" min="0" value="10"></label>
+          <label>Latency above (ms)<input id="thr-lat" type="number" step="10" min="1" value="150"></label>
+          <label>Readings needed per spot<input id="thr-min" type="number" step="1" min="1" value="3"></label>
+          <button type="submit">Apply thresholds</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h3>Start the scanner on the walking laptop</h3>
+        <pre id="cmd" class="cmd"></pre>
+        <div class="actions"><button id="btn-copy" type="button">Copy command</button></div>
+        <p class="muted small">Use the server's network address instead of localhost when the scanner runs on a different machine.
+          Add <code>--mode checkpoint</code> to measure only after each click.</p>
+      </section>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
