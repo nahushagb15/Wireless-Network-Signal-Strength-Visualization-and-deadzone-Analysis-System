@@ -23,7 +23,7 @@ reading with it. The clicker can be a second person on a phone, or you can pause
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python run.py                      # opens on http://localhost:5000
+.venv\Scripts\python launch.py                    
 ```
 
 Try it without any Wi-Fi hardware using the built-in simulator:
